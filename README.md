@@ -2,6 +2,8 @@
 
 This repository is a fork of [uamphome/matter_sensor_xiao_nrf52840](https://github.com/uamphome/matter_sensor_xiao_nrf52840) adapted for a **Matter Contact Sensor** (door/window) on the Seeed Studio Xiao nRF52840 using nRF Connect SDK / Zephyr. It prioritizes Seeed examples where possible, with Nordic Matter contact_sensor sample as base.
 
+**Note**: Grok (built by xAI) has been used heavily to make this code work.
+
 ## Project Goal
 Matter-compatible Contact Sensor on Seeed Xiao nRF52840. Uses BooleanState cluster for open/closed state. Optional reed switch on D0 (P0.02).
 
@@ -47,9 +49,21 @@ Test BooleanState cluster for contact state (button or reed switch simulates ope
 **Note**: This code is not Matter certified; it is for developer / experimental purposes only.
 
 ## License / Usage
-This project is released under the MIT License (or similar permissive license). Anyone can change, edit, and use the code as they wish, as long as they give credit to the original author (Øyvind Nymark Brown / the repo contributor). See LICENSE file for details.
+Anyone can change, edit, and use the code as they wish, as long as they give credit to the author. See LICENSE file for details.
 
 ## Customization
-... (keep existing)
+- **Contact GPIO**: Edit `boards/xiao_ble_nrf52840.overlay` for pin (default D0/P0.02).
+- **App logic**: `src/app_task.cpp` — update BooleanState on GPIO change.
+- **ZAP**: `src/default_zap/contact_sensor.zap` — regenerate with `west zap-gui` / `west zap-generate` if changing clusters.
+- Low power: Disable unused peripherals in overlay + prj.conf.
+- Partitions: See `boards/xiao_ble_nrf52840.overlay` and pm files for UF2/MCUBoot compatibility.
+
+## Files of Interest
+- `prj.conf` / `prj_debug.conf`: Kconfig for Matter, BLE, power.
+- `boards/xiao_ble_nrf52840.overlay`: Device tree for Xiao + contact button + partitions.
+- `src/`: App task + main + generated ZAP for contact_sensor.
+- `sysbuild/`: Optional multi-image support.
+
+Based on Nordic samples and Seeed guidance. Make this public when ready via GitHub Settings → Danger Zone → Change visibility.
 
 Happy building!
