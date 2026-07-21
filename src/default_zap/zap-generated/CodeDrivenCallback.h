@@ -39,6 +39,12 @@ void MatterBasicInformationClusterInitCallback(chip::EndpointId endpointId);
 
 void MatterBasicInformationClusterShutdownCallback(chip::EndpointId endpointId);
 
+void MatterLocalizationConfigurationClusterInitCallback(
+    chip::EndpointId endpointId);
+
+void MatterLocalizationConfigurationClusterShutdownCallback(
+    chip::EndpointId endpointId);
+
 void MatterGeneralCommissioningClusterInitCallback(chip::EndpointId endpointId);
 
 void MatterGeneralCommissioningClusterShutdownCallback(
@@ -65,3 +71,7 @@ void MatterGroupKeyManagementClusterInitCallback(chip::EndpointId endpointId);
 
 void MatterGroupKeyManagementClusterShutdownCallback(
     chip::EndpointId endpointId);
+
+void MatterBooleanStateClusterInitCallback(chip::EndpointId endpointId);
+
+void MatterBooleanStateClusterShutdownCallback(chip::EndpointId endpointId);
