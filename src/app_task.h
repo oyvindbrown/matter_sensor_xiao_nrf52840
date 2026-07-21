@@ -1,39 +1,23 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
- *
- * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ * App Task header for Contact Sensor
  */
 
 #pragma once
 
-#include <platform/CHIPDeviceLayer.h>
+#include "board/board.h"
 
-struct k_timer;
+#include <platform/CHIPDeviceLayer.h>
 
 class AppTask {
 public:
-	static AppTask &Instance()
-	{
-		static AppTask sAppTask;
-		return sAppTask;
-	};
+    static AppTask &Instance()
+    {
+        static AppTask sAppTask;
+        return sAppTask;
+    }
 
-	CHIP_ERROR StartApp();
-
-	void UpdateClustersState();
+    CHIP_ERROR StartApp();
 
 private:
-	CHIP_ERROR Init();
-
-	static void MatterEventHandler(const chip::DeviceLayer::ChipDeviceEvent *event, intptr_t arg);
-
-	static void MeasurementsTimerHandler();
-
-	void UpdateTemperatureClusterState();
-
-	void UpdateHumidityClusterState();
-#ifdef CONFIG_FUEL_GAUGE
-	void UpdateBatteryClusterState();
-#endif
-
+    CHIP_ERROR Init();
 };
