@@ -1,0 +1,10 @@
+# Basic pm_static for XIAO nRF52840 (adapt from Nordic/XIAO demo)
+mcuboot:
+  address: 0x0
+  size: 0x10000
+app:
+  address: 0x10000
+  size: 0x76000
+storage:
+  address: 0xf8000
+  size: 0x8000
