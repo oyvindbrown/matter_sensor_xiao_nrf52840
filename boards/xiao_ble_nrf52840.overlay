@@ -1,77 +1,73 @@
-/ {
+/*
+ * Adapted for Seeed Studio XIAO nRF52840 (non-Sense) Matter Contact Sensor
+ * NCS SDK 3.2.x / UF2 bootloader via double-tap RST
+ * Sources: Seeed Wiki, Zephyr xiao_ble, Nordic contact_sensor
+ */
 
+#include <zephyr/dt-bindings/led/led.h>
+#include <samples/matter/nrf52_partitions.dtsi>
+
+ / {
+	chosen {
+		nordic,pm-ext-flash = &p25q16h;
+		zephyr,entropy = &rng;
+	};
+
+	/* Contact sensor (reed switch to D0/P0.02 + GND) */
 	buttons {
-	
 		compatible = "gpio-keys";
-	
-		button0: button_0 {
-			gpios = <&xiao_d 3 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 0";
-			zephyr,code = <INPUT_KEY_0>;
-		
-		};
-	
+
 		button1: button_1 {
-			gpios = <&xiao_d 4 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 1";
-			zephyr,code = <INPUT_KEY_1>;
-		};
-	
-		button2: button_2 {
-			gpios = <&xiao_d 5 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 2";
-			zephyr,code = <INPUT_KEY_2>;
-		};
-	
-		button3: button_3 {
-			gpios = <&xiao_d 6 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 3";
-			zephyr,code = <INPUT_KEY_3>;
-		};
-	
-	};
-};
-
-&spi2 {
-	status = "disabled";
-};
-
-/* Change the pin mappings on the xiao */
-&pinctrl {
-	i2c1_default: i2c1_default {
-		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 1, 15)>,
-				<NRF_PSEL(TWIM_SCL, 1, 14)>;
+			gpios = <&gpio0 2 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Contact Sensor";
 		};
 	};
 
-	i2c1_sleep: i2c1_sleep {
-		group1 {
-			psels = <NRF_PSEL(TWIM_SDA, 1, 15)>,
-				<NRF_PSEL(TWIM_SCL, 1, 14)>;
-			low-power-enable;
+	aliases {
+		led0 = &led0;
+		sw0 = &button1;
+	};
+
+	/* Flash partitions (UF2/MCUBoot compatible) */
+	&flash0 {
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			mcuboot_partition: partition@0 {
+				label = "mcuboot";
+				reg = <0x0 0x10000>;
+			};
+
+			slot0_partition: partition@10000 {
+				label = "image-0";
+				reg = <0x10000 0x76000>;
+			};
+
+			slot1_partition: partition@86000 {
+				label = "image-1";
+				reg = <0x86000 0x74000>;
+			};
+
+			storage_partition: partition@f8000 {
+				label = "storage";
+				reg = <0xf8000 0x8000>;
+			};
 		};
 	};
-};
 
-&i2c1 {
-	status = "okay";
-	compatible = "nordic,nrf-twim";
-
-    pinctrl-0 = <&i2c1_default>;
-    pinctrl-1 = <&i2c1_sleep>;
-    pinctrl-names = "default", "sleep";
-
-	sht4x@44 {
-		compatible = "sensirion,sht4x";
-		repeatability = <2>;
-		reg = <0x44>;
+	/* Onboard LED (non-Sense RGB) */
+	&led0 {
+		gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;  /* Red channel example */
 	};
-
-	max17048@36 {
-		compatible = "maxim,max17048";
-		reg = <0x36>;
-		status = "okay";
-	};	
 };
 
+/* Disable unused for low power + UF2 stability */
+&adc { status = "disabled"; };
+&uart1 { status = "disabled"; };
+&i2c0 { status = "disabled"; };
+&spi1 { status = "disabled"; };
+&spi3 { status = "disabled"; };
+&pwm0 { status = "disabled"; };
+&usbd { status = "okay"; };  /* Keep USB for UF2 */
